@@ -1,15 +1,25 @@
 <?php
-
+$Inmueble="";
 $Inmueble= file_get_contents('../php/data-1.json');
 $json= json_decode($Inmueble);
 
+echo $Inmueble;
 
 
-$d=$_POST['ds'];
-
-if($d=='s'){
+/*
+if(isset($_POST['ds'])=='s'){
     echo $Inmueble;
-}
+}else
+{
+  Ciudad($json)  ;
+}*/
+
+/*
+d($Inmueble);
+
+
+Ciudad($json);
+*/
 
 
 /*
@@ -37,6 +47,10 @@ if($c==true){
 }
 
 */
+/*function d($s){
+    
+    echo $s;
+}
 
 function Ciudad($data){
 $i=0;
@@ -56,5 +70,6 @@ $estructura .= "</option>";
 
 }
 echo $estructura;
-}
+
+}*/
 ?>

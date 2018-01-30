@@ -51,18 +51,41 @@ function inicializarSlider() {
     }, 10)
 }*/
 
+function AjaxReq(urlReq, dataSubmit, controlView="wraperInmuebles", load=true, callback){
+    callback = callback || function(){};
+    $.ajax({
+      method: "POST"
+      ,url: urlReq
+      ,data: dataSubmit
+    })
+      .done(function( rsp) {
+        let $control = $( "#" + controlView );
+        if(load){
+          $control.html( rsp );
+        }
+        callback(rsp, $control);
+      })
+      .fail(function( jqXHR, textStatus ) {
+        alert( "Request failed: " + textStatus );
+      });
+}
+
+
+
+
 $(function () {
-    
-    
-    
-    
+
     $('#mostrarTodos').click(function () {
         MostrarDatos();
 
     })
     $('select').material_select();
     
-  // LLenarComboCiudad();
+   //LLenarComboCiudad();
+    var insertOptions = function(rsp, control){ $(control).append(rsp).material_select(); };
+   
+    AjaxReq("../Buscador/php/ComboCuidades.php", {}, "selectCiudad", false, insertOptions);
+    AjaxReq("../Buscador/php/ComboTipo.php", {}, "selectTipo", false, insertOptions);
 
 
 
@@ -70,7 +93,7 @@ $(function () {
 
 function MostrarDatos() {
 
-    $.post("../Buscador/PHP/ProcesaJSon.php", {ds:"s"}, function (result) {
+    $.post("../Buscador/PHP/index.php", {ds:"s"}, function (result) {
         
      
 
@@ -84,18 +107,20 @@ function MostrarDatos() {
 
 }
 
-
+/*
 function LLenarComboCiudad() {
+  
     $.ajax({
-        url: "../Buscador/PHP/ProcesaJSon.php",
+        url: "../Buscador/php/index.php",
         type: 'POST',
         async: true,
-        data: 'Ciudad=true',
+        data: {},
         success: function (result) {
-            $('select').material_select();
-            //$('#selectCiudad').add(result);
-            Materialize.updateTextFields();
-            alert(result);
+            
+        $('select').material_select();
+        $('#selectCiudad').append('<option value="asd">holll</option>');
+        Materialize.updateTextFields();
+          
         },
         error: function (result) {
             alert('error' + result);
@@ -113,19 +138,20 @@ function LLenarComboCiudad() {
     //        Materialize.updateTextFields();
 
     // $.each(JSON.parse(result), function (key, value) {
-    /*    $('select').material_select();
+       $('select').material_select();
         $('#selectCiudad').append('<option value="'+valor+'">'+ciudad+ '</option>');
-        Materialize.updateTextFields();*/
+        Materialize.updateTextFields();
 
     //})
     //});
 
 
 
+} 
+
+*/
 
 
-
-}
 
 //}
 
