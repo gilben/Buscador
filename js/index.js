@@ -51,23 +51,23 @@ function inicializarSlider() {
     }, 10)
 }*/
 
-function AjaxReq(urlReq, dataSubmit, controlView="wraperInmuebles", load=true, callback){
-    callback = callback || function(){};
+function AjaxReq(urlReq, dataSubmit, controlView = "wraperInmuebles", load = true, callback) {
+    callback = callback || function () {};
     $.ajax({
-      method: "POST"
-      ,url: urlReq
-      ,data: dataSubmit
-    })
-      .done(function( rsp) {
-        let $control = $( "#" + controlView );
-        if(load){
-          $control.html( rsp );
-        }
-        callback(rsp, $control);
-      })
-      .fail(function( jqXHR, textStatus ) {
-        alert( "Request failed: " + textStatus );
-      });
+            method: "POST",
+            url: urlReq,
+            data: dataSubmit
+        })
+        .done(function (rsp) {
+            let $control = $("#" + controlView);
+            if (load) {
+                $control.html(rsp);
+            }
+            callback(rsp, $control);
+        })
+        .fail(function (jqXHR, textStatus) {
+            alert("Error al consultar datos : " + textStatus);
+        });
 }
 
 
@@ -79,11 +79,15 @@ $(function () {
         MostrarDatos();
 
     })
-    $('select').material_select();
-    
-   //LLenarComboCiudad();
-    var insertOptions = function(rsp, control){ $(control).append(rsp).material_select(); };
+
+
    
+
+    $('select').material_select();
+
+    var insertOptions = function (rsp, control) {
+        $(control).append(rsp).material_select();
+    };
     AjaxReq("../Buscador/php/ComboCuidades.php", {}, "selectCiudad", false, insertOptions);
     AjaxReq("../Buscador/php/ComboTipo.php", {}, "selectTipo", false, insertOptions);
 
@@ -91,21 +95,64 @@ $(function () {
 
 })
 
-function MostrarDatos() {
 
-    $.post("../Buscador/PHP/index.php", {ds:"s"}, function (result) {
-        
-     
+$('#submitButton').on('click', function (e) {
+ $('#Contenido').children().remove();
+    e.preventDefault();
+    $.ajax({
+        url: "php/buscar.php",
+        type: "GET",
+        data: {"ciudad": $("#selectCiudad").val(), "tipo": $("#selectTipo").val(), "maxprecio": $(".irs-to").html(), "minprecio": $(".irs-from").html()},
+        dataType: "json"
+    }).done(function (data) {
+
+        var texto = "";
+
+        $.each( data, function( key, value ) {
+
+             $('#Contenido').append('<div class="row"><div class="col m12"><div class="card horizontal itemMostrado"><img src="img/home.jpg" style="height:30%"><div class="card-stacked"><div class="card-content"><span>Direccion:' + value.Direccion + '</span><br><span>Cuidad: ' + value.Ciudad + '</span><br><span>Telefono: ' + value.Telefono + '</span><br><span>Codigo Postal:' + value.Codigo_Postal + '</span><br><span>Tipo:' + value.Tipo + '</span><br><span>Precio:</span><span class="precioTexto">' + value.Precio + '</span><br></div><div class="card-action"><a href="#" class="precioTexto">VER MÁS</a></div></div></div></div></div>')
+        });
+        //$('#buscador').html(texto);
+    });
+});
+
+
+function MostrarDatos() {
+    $('#Contenido').children().remove();
+
+    $.post("../Buscador/PHP/index.php", {
+       
+    }, function (result) {
+
+
 
         $.each(JSON.parse(result), function (key, value) {
 
-            $('#Contenido').append('<div class="row"><div class="col m12"><div class="card horizontal itemMostrado"><img src="img/home.jpg" style="height:30%"><div class="card-stacked"><div class="card-content"><span>Direccion:' + value.Direccion + '</span><br><span>Cuidad:' + value.Ciudad + '</span><br><span>Telefono:' + value.Telefono + '</span><br><span>Codigo Postal:' + value.Codigo_Postal + '</span><br><span>Tipo:' + value.Tipo + '</span><br><span>Precio:' + value.Precio + '</span><br></div><div class="card-action"><a href="#" class="precioTexto">VER MÁS</a></div></div></div></div></div>')
+            $('#Contenido').append('<div class="row"><div class="col m12"><div class="card horizontal itemMostrado"><img src="img/home.jpg" style="height:30%"><div class="card-stacked"><div class="card-content"><span>Direccion:' + value.Direccion + '</span><br><span>Cuidad:' + value.Ciudad + '</span><br><span>Telefono:' + value.Telefono + '</span><br><span>Codigo Postal:' + value.Codigo_Postal + '</span><br><span>Tipo:' + value.Tipo + '</span><br><span>Precio:</span><span class="precioTexto">' + value.Precio + '</span><br></div><div class="card-action"><a href="#" class="precioTexto">VER MÁS</a></div></div></div></div></div>')
 
-            
+
         })
     });
 
 }
+
+//
+//function MostrarDatosFiltrados() {
+//
+//    var sel = $('#selectCiudad').val();
+//    console.log(select);
+//    $.post("../Buscador/PHP/index.php", {
+//        ds: "s"
+//    }, function (result) {
+//
+//        $.each(JSON.parse(result), function (key, value) {
+//
+//            $('#Contenido').append('<div class="row"><div class="col m12"><div class="card horizontal itemMostrado"><img src="img/home.jpg" style="height:30%"><div class="card-stacked"><div class="card-content"><span>Direccion:' + value.Direccion + '</span><br><span>Cuidad:' + value.Ciudad + '</span><br><span>Telefono:' + value.Telefono + '</span><br><span>Codigo Postal:' + value.Codigo_Postal + '</span><br><span>Tipo:' + value.Tipo + '</span><br><span>Precio:' + value.Precio + '</span><br></div><div class="card-action"><a href="#" class="precioTexto">VER MÁS</a></div></div></div></div></div>')
+//
+//
+//        })
+//    });
+//}
 
 /*
 function LLenarComboCiudad() {
