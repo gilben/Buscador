@@ -120,7 +120,7 @@ $('#submitButton').on('click', function (e) {
 function MostrarDatos() {
     $('#Contenido').children().remove();
 
-    $.post("../Buscador/PHP/index.php", {
+    $.post("php/buscar.php", {
        
     }, function (result) {
 
